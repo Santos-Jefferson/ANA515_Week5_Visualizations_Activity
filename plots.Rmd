@@ -1,0 +1,72 @@
+---
+title: "US State Vaccinations"
+author: "Jefferson Santos - ANA 515"
+date: '11/17/2021'
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(hrbrthemes)
+
+# using read.csv function and assigning it to an object
+# We will use the built in read.csv(...) function call, which reads the data in as a data frame, and assign the data frame to a variable (using <-) so that it is stored in R’s memory.
+data <- read.csv('../us_state_vaccinations.csv')
+```
+
+```{r results = FALSE, echo = FALSE}
+# removing few columns from the dataset
+data_subset <- select(data, date,	location,	total_vaccinations, total_distributed, people_fully_vaccinated, daily_vaccinations, share_doses_used)
+
+#filtering the data by location = entire US instead of by State to avoid an incorret summary below
+data_nous <- filter(data_subset, location != "United States")
+#data_nous$state = substr(data_nous$location,1,4)
+#data_nous <- arrange(data_nous, people_fully_vaccinated)
+
+# horizontal bar chart using ggplot2
+ggplot(
+  data = data_nous,
+  aes(x = location,
+      y = people_fully_vaccinated)) +
+  geom_bar(
+    stat = "identity",
+    width = 0.4,
+    color = "blue") +
+  coord_flip() +
+  theme(
+    text = element_text(size=7),
+    title = element_text(size=10)) +
+  labs(
+    title = "People Fully Vaccinated per State",
+    x = "US Territory",
+    y = "People Fully Vaccinated")
+
+# scatter plot 
+ggplot(
+  data = data_nous,
+  aes(x = total_vaccinations,
+      y = total_distributed)) + 
+  geom_point(
+    color="blue",
+    shape=21,
+    alpha=0.9,
+    size=0.1,
+    stroke = 1
+  ) +
+  theme(
+    text = element_text(size=7),
+    title = element_text(size=10)) +
+  labs(
+    title = "US Territories - Total Vaccinations vs. Total Distributed",
+    x = "Total Vaccinations",
+    y = "Total Distributed")
+
+```
+
+
+
